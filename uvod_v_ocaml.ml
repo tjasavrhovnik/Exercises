@@ -71,7 +71,7 @@ let rec razdeli k l =
  - : int list = [0; 0; 0; 0; 0]
  ---------- *)
  
-let zbrisi k l = 
+ let zbrisi k l = 
   match (k, l) with
   | (k, []) -> []
   | (0, hd::tl) -> tl
@@ -80,6 +80,11 @@ let zbrisi k l =
 	match (k, l2) with
 	| (k, []) -> []
 	| (k, hd2::tl2) -> hd::l1@tl2
+	
+let rec zbrisi2 k = function
+  |[] -> failwith "Prekratek seznam"
+  |hd::tl ->
+  if k=0 then tl else hd :: zbrisi2 (k-1) tl
 
 (* Funkcija "rezina i k l" sestavi novi seznam, ki vsebuje elemente seznama l od vključno
  i-tega do k-tega (brez k-tega).
@@ -103,6 +108,11 @@ let rezina i k l =
 	  |(n, hd::tl) -> izpusti (n-1) tl
   in
   vzemi (k-i) (izpusti i l)
+  
+ let rezina2 i k l =
+   let (_, rez1) = razdeli i l in
+   let (rez2, _) = razdeli (k-1) rez1 in
+   rez2
 
 (* Funkcija "vstavi x k l" na k-to mesto seznama l vrine element x.
  Če je k izven mej seznama, ga doda na začetek oz. konec.
@@ -118,6 +128,10 @@ let rec vstavi x k l =
     |(k, []) -> [x]
 	|(k, hd::tl) -> if k<=0 then x::hd::tl else hd :: (vstavi x (k-1) tl)
 	
+let rec vstavi2 x k l =
+  let (zacetek, konec) = razdeli k l in
+  zacetek @ [x] @ konec
+	
 
 (* Funkcija "zavrti n l" seznam l zavrti za n mest v levo.
  Predpostavimo, da je n v mejah seznama.
@@ -126,7 +140,9 @@ let rec vstavi x k l =
  - : int list = [3; 4; 5; 1; 2]
  ---------- *)
 
-let zavrti n l = ()
+let zavrti n l = 
+  let (zacetek, konec) = razdeli n l in
+  konec @ zacetek
 	
  
 (* Funkcija "pobrisi x l" iz seznam l izbriše vse pojavitve elementa x.
@@ -135,7 +151,9 @@ let zavrti n l = ()
  - : int list = [2; 3; 2; 3]
  ---------- *)
 
-let pobrisi x l = ()
+let rec pobrisi x = function
+  |[] -> []
+  |hd :: tl -> if hd=x then pobrisi x tl else hd :: pobrisi x tl
 
 (* Funkcija "je_palindrom l" ugotovi ali seznam l predstavlja palindrom.
  Namig: Pomagaj si s pomožno funkcijo, ki obrne vrstni red elementov seznama. 
@@ -157,6 +175,14 @@ let obrni l =
 let je_palindrom l = 
   l = obrni l
   
+  
+let je_palindrom2 l =
+  let rec obrni2 = function
+    |[] -> []
+	|hd::tl -> obrni2 tl @ [hd]
+  in
+  l = obrni2 l
+	
 (* Funkcija "max_po_komponentah l1 l2" vrne seznam, ki ima za elemente
  večjega od elementov na ustreznih mestih v seznamih l1 in l2.
  Skupni seznam ima dolžino krajšega od seznamov l1 in l2. 
@@ -164,7 +190,11 @@ let je_palindrom l =
  # max_po_komponentah [5; 4; 3; 2; 1] [0; 1; 2; 3; 4; 5; 6];;
  - : int list = [5; 4; 3; 3; 4]
  ---------- *)
-let max_po_komponentah l1 l2 = ()
+let rec max_po_komponentah l1 l2 = 
+  match (l1, l2) with
+    |([], _) -> []
+	|(_, []) -> []
+	|(hd1::tl1, hd2::tl2) -> (max hd1 hd2) :: (max_po_komponentah tl1 tl2)
   
 (* Funkcija "drugi_najvecji l" vrne drugo največjo vrednost v seznamu l.
  Ponovitve elementa se štejejo kot ena vrednost.
@@ -175,4 +205,10 @@ let max_po_komponentah l1 l2 = ()
  - : int = 10
  ---------- *)
  
-let drugi_najvecji l = ()
+let drugi_najvecji l = 
+  let rec najvecji = function
+    |[] -> failwith "Prekratek seznam"
+	|hd::[] -> hd
+	|hd::tl -> max hd (najvecji tl)
+  in
+  najvecji (pobrisi (najvecji l) l)
