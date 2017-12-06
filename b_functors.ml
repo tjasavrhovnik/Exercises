@@ -15,12 +15,12 @@ module type Comparable = sig
   end
 
 (* Implement a module that can compare integers. *)
-(*
+
 module Cmp_Int = struct
   type t = int
-  let compare x y = ...
+  let compare x y = if x < y then LT else if x = y then EQ else GT
 end
- *)
+
 
 (* example: *)
 (* let _ = Cmp_Int.compare 9000 42;; *)
@@ -39,6 +39,13 @@ end
    built-in OCaml functions. It compares strings s and t lexicographically,
    yielding -1 if s < t, 0 if s = t and 1 otherwise. *)
 module Cmp_String = struct
+  type t = String
+  let compare x y = match Pervasives.compare x y with
+    | -1 -> LT
+	| 0 -> EQ
+	| 1 -> GT
+	| n -> failwith ("unexpected result from Pervasives.compare: " ^
+	                    (string_of_int n))
 
 end
 
@@ -49,23 +56,28 @@ end
    that takes a Comparable module as an argument and returns another
    Comparable module on the same carrier type but with inverted order relation.
  *)
-(*
-module Cmp_inv (Cmp : Comparable) : Comparable with type t = Cmp.t  = struct
-  type t = ...
-  let compare x y = ...
-end
- *)
 
+module Cmp_inv (Cmp : Comparable) : Comparable with type t = Cmp.t  = struct
+  type t = Cmp.t
+  let compare x y = match Cmp.compare x y with
+    | LT -> GT
+	| EQ -> EQ
+	| GT -> LT
+end
+
+let f (x : int) = (
+  -x
+)
 
 (* To use a functor, like other functions, we have to apply it. One difference
    with other OCaml functions is that we need parenthesis around the
    arguments. *)
 
-(*
+
 module Cmp_Int_inv = Cmp_inv (Cmp_Int)
 let _ = Cmp_Int.compare (-9000) 42;;
 let _ = Cmp_Int_inv.compare (-9000) 42;;
- *)
+
 
 (* Finally, here is the signature of a priority queue. We have a type of priority queues h, a type
    of elements el, an empty priority queue, and operations to push onto and safely pop
