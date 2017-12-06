@@ -44,7 +44,11 @@ module type NAT = sig
     type t
     val eq   : t -> t -> bool
     val zero : t
-    (* add what's missing here! *)
+    val one : t
+	val add : t -> t -> t
+	(*some more here *)
+	val to_int : t -> int
+	val from_int : int -> t
   end
 
 (* Write a module that implements the NAT signature, using OCaml's "int" type
@@ -52,13 +56,19 @@ module type NAT = sig
    Trick : until you're done implementing Nat_int, it won't have the required
    signature. You can add stubs with `failwith "later"' to make the compiler
    happy and leave a note for yourself. *)
-(*
+
 module Nat_int : NAT = struct
-  type t =
-  let eq =
-  ...
+  type t = int
+  let eq = (=)
+  let zero = 0
+  let one = 1
+  let add = (+)
+  let sub x y = max 0 (x - y)
+  (*some more here *)
+  let to_int t = t
+  let from_int x = max x 0
 end
- *)
+
 
 (* Write another implementation of NAT, taking inspiration from the Peano
  axioms: https://en.wikipedia.org/wiki/Peano_axioms
@@ -69,12 +79,24 @@ end
  - All the other functions are also defined by structural recursion (c.f.
    Wikipedia).
  *)
-(*
-module ... = struct
-  type t = ...
-  let rec eq x y = ..
+
+module NAT_peano = struct
+  type t = Zero | Succ of t
+  let rec eq x y =
+    match (x, y) with
+	| (Zero, Zero) -> true
+	| (Succ _, Zero) -> false
+	| (Zero, Succ _) -> false
+	| (Succ x, Succ y) -> eq x y
+  let zero = Zero
+  let one = Succ Zero
+  let rec add x y =
+    match x with
+	| Zero -> y
+	| Succ x -> Succ (add x y)
+  let rec to_int n = failwith "todo"
 end
- *)
+
 
 
 (* For those wishing to reenact the glory of 17th century mathematics:
@@ -84,12 +106,15 @@ end
    We will need a carrier type, a test for equality, zero, one, i, negation and
    conjugation, addition, multiplication, division, and taking the inverse.
  *)
-(* module type COMPLEX = sig
+
+ module type COMPLEX = sig
     type t
     val eq : t -> t -> bool
-    ...
+    val zero : t
+	val one : t
+	val i : t
   end
- *)
+
 
 (* Write an implementation of Professor Descartes's complex numbers. Reminder:
  this should be the cartesian representation (latin_of_french "Descartes" =
