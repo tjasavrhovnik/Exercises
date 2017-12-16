@@ -34,6 +34,10 @@ let rec poisci2 k l =
   | (_, []) -> failwith "Prekratek seznam."
   | (0, hd::tl) -> hd
   | (k, hd::tl) -> poisci2 (k-1) tl
+  
+let rec poisci3 k = function
+  | [] -> failwith "Prekratek seznam."
+  | hd::tl -> if k=0 then hd else poisci3 (k-1) tl
 
 (* Funkcija "podvoji l" podvoji pojavitve elementov v seznamu l.
  ----------
@@ -45,6 +49,10 @@ let rec podvoji l =
   match l with
   | [] -> []
   | hd::tl -> [hd]@[hd]@(podvoji tl)
+  
+let rec podvoji2 = function
+  | [] -> []
+  | hd::tl -> hd :: hd :: podvoji2 tl
 
 (* Funkcija "razdeli k l" seznam l razdeli na dva seznama. Prvi vsebuje prvih k elementov
  seznama l, v drugem pa vsi ostali. Funkcija vrne par teh dveh seznamov.
@@ -59,7 +67,7 @@ let rec podvoji l =
 let rec razdeli k l = 
   match (k, l) with
   | (0, l) -> ([], l)
-  | (k, []) -> ([], [])
+  | (_, []) -> ([], [])
   | (k, hd::tl) -> 
     let (l1, l2) = razdeli (k-1) tl in
 	(hd::l1, l2)
@@ -111,7 +119,7 @@ let rezina i k l =
   
  let rezina2 i k l =
    let (_, rez1) = razdeli i l in
-   let (rez2, _) = razdeli (k-1) rez1 in
+   let (rez2, _) = razdeli (k-i) rez1 in
    rez2
 
 (* Funkcija "vstavi x k l" na k-to mesto seznama l vrine element x.
@@ -140,7 +148,7 @@ let rec vstavi2 x k l =
  - : int list = [3; 4; 5; 1; 2]
  ---------- *)
 
-let zavrti n l = 
+let rec zavrti n l = 
   let (zacetek, konec) = razdeli n l in
   konec @ zacetek
 	
