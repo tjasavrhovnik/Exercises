@@ -37,7 +37,7 @@ let string_of_spell = function
   | Cripple -> "Cripple"
 
 (* Napiši funkcijo ki vsakemu uroku priredi primerno šolo magije. *)
-let school_of_spell spell = function
+let school_of_spell = function
   | Firewall | Blaze -> Fire
   | Resurrect | Cripple -> Necrotic
   | Renounce | Banish-> Angelic
