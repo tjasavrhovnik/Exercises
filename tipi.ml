@@ -91,11 +91,11 @@ let rec strongest_wizard (wizards : wizard list) : wizard option =
 	    then Some w
 	    else Some v)
 		
-let rec strongest_wizard (wizards : wizard list) : wizard option =
+let rec strongest_wizard2 (wizards : wizard list) : wizard option =
   match wizards with
   | [] -> None
   | w::ws ->
-    begin match strongest_wizard ws with
+    begin match strongest_wizard2 ws with
 	  | None -> Some w
 	  | Some w' ->
 	    if w.ability >= w'.ability
