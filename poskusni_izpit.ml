@@ -42,14 +42,16 @@ let kompozitum f g x =
 type 'a drevo = Node of 'a * 'a drevo list
 
 (* 2.2) Napišite funkcijo, ki vrne koren danega rožnega drevesa. *)
-let koren Node(x, _) =
-  Some x
+let koren d = function
+  | Node (x, _) -> Some x
 
 (* 2.3) Napišite funkcijo, ki preveri, ali drevo celih števil vsebuje kakšno negativno število. *)
-let rec kaksno_negativno Node(x, xs) = 
-  if x < 0 
-  then true
-  else kaksno_negativno xs
+let rec kaksno_negativno d =
+  match d with
+  | Node(x, xs) ->  
+    if x < 0 
+    then true
+    else kaksno_negativno xs
 
 (* 2.4) Sestavite funkcijo, ki sprejme naravno število ter sestavi (poljubno)
    drevo, ki ima toliko otrok.
