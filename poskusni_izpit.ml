@@ -43,7 +43,7 @@ type 'a drevo = Node of 'a * 'a drevo list
 
 (* 2.2) Napišite funkcijo, ki vrne koren danega rožnega drevesa. *)
 let koren d = function
-  | Node (x, _) -> Some x
+  | Node(x, _) -> Some x
 
 (* 2.3) Napišite funkcijo, ki preveri, ali drevo celih števil vsebuje kakšno negativno število. *)
 	
