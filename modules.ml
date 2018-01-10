@@ -42,11 +42,12 @@
  operations and conversion functions from and to OCaml's "int" type. *)
 module type NAT = sig
     type t
-    val eq   : t -> t -> bool
+    val eq : t -> t -> bool
     val zero : t
     val one : t
 	val add : t -> t -> t
-	(*some more here *)
+	val sub : t -> t -> t
+	val mul : t -> t -> t
 	val to_int : t -> int
 	val from_int : int -> t
   end
@@ -64,11 +65,10 @@ module Nat_int : NAT = struct
   let one = 1
   let add = (+)
   let sub x y = max 0 (x - y)
-  (*some more here *)
+  let mul = ( * )
   let to_int t = t
-  let from_int x = max x 0
+  let from_int x = x
 end
-
 
 (* Write another implementation of NAT, taking inspiration from the Peano
  axioms: https://en.wikipedia.org/wiki/Peano_axioms
@@ -94,10 +94,23 @@ module NAT_peano = struct
     match x with
 	| Zero -> y
 	| Succ x -> Succ (add x y)
-  let rec to_int n = failwith "todo"
+  let rec sub x y =
+    match (x, y) with
+	| (_, Zero) -> x
+	| (Zero, _) -> Zero
+	| (Succ x, Succ y) -> sub x y
+  let rec mul x y =
+    match x with
+	| Zero -> Zero
+	| Succ x -> add y (mul x y)
+  let rec to_int = function
+    | Zero -> 0
+	| Succ n -> 1 + (to_int n)
+  let from_int n = 
+    if n <= 0
+	then Zero
+	else Succ (from_int (n-1))
 end
-
-
 
 (* For those wishing to reenact the glory of 17th century mathematics:
    Follow the fable told by John Reynolds in the introduction. *)
@@ -113,8 +126,13 @@ end
     val zero : t
 	val one : t
 	val i : t
+	val neg : t -> t
+	val conj : t -> t
+	val add : t -> t -> t
+	val mul : t -> t -> t
+	val div : t -> t -> t
+	val inv : t -> t
   end
-
 
 (* Write an implementation of Professor Descartes's complex numbers. Reminder:
  this should be the cartesian representation (latin_of_french "Descartes" =
@@ -122,14 +140,25 @@ end
   Recommendation: implement a few basic parts of the module but leave division
   for later. It's relatively messy.
  *)
-(*
+
 module Cartesian : COMPLEX = struct
   type t = {re : float; im : float}
-  let eq x y = x.re = y.re && ...
-  ...
+  let eq x y = x.re = y.re && x.im = y.im
+  let zero = {re = 0.; im = 0.}
+  let one = {re = 1.; im = 0.}
+  let i = {re = 0.; im = 1.}
+  let neg {re; im} = {re = -. re; im = -. im}
+  let conj {re; im} = {re; im = -. im}
+  let add x y = {re = x.re +. y.re; im = x.im +. y.im}
+  let mul x y = {re = x.re *. y.re -. x.im *. y.im;
+                 im = x.re *. y.im +. x.im *. y.re} 
+  let div x y =
+    let denominator = (y.re *. y.re +. y.im *. y.im) in
+    let re = (x.re *. y.re +. x.im *. y.im) /. denominator
+    and im = (x.im *. y.re -. x.re *. y.im) /. denominator in
+    {re; im}
+  let inv x = div one x	
 end
- *)
-
 
 (* Now implement Professor Bessel's complex numbers. The carrier this time
    will be a polar representation, with a magnitude and an argument for each
@@ -138,13 +167,46 @@ end
    multiplication. Then the rest except for addition. So far, so pleasant.
    Finally implement addition. Now form an opinion on why nobody likes polar
    coordinates. *)
-(*
+
 module Polar : COMPLEX = struct
   type t = {magn : float; arg : float}
+  
   let pi = 2. *. acos 0.
   let rad deg = (deg /. 180.) *. pi
   let deg rad = (rad /. pi) *. 180.
-  let eq x y =
-  ...
+  
+  let eq x y = 
+    x.magn = y.magn &&
+    (x.magn = 0. || (mod_float x.arg 360. = mod_float y.arg 360.))
+  
+  let zero = {magn = 0.; arg = 0.}
+  let one = {magn = 1.; arg = 0.}
+  let i = {magn = 1.; arg = 90.}
+  
+  let neg {magn; arg} = {magn; arg = arg +. 180.}
+  let conj {magn; arg} = {magn; arg = 360. -. (mod_float arg 360.)}
+  
+  let re {magn; arg} = magn *. cos (rad arg)
+  let im {magn; arg} = magn *. sin (rad arg)
+  
+  let mul x y = {magn = x.magn *. y.magn; arg = x.arg +. y.arg}
+  let div x y = {magn = x.magn /. y.magn; arg = x.arg -. y.arg}
+  let inv = div one
+  
+  let magn re im = sqrt (re *. re +. im *. im)
+  let arg re im =
+    let rad =
+	  if re > 0. then atan (im /. re)
+	  else if re < 0. && im > 0. then atan (im /. re) +. pi
+	  else if re < 0. && im < 0. then atan (im /. re) -. pi
+	  else if re = 0. && im > 0. then pi /. 2.
+	  else if re = 0. && im < 0. then -. (pi /. 2.)
+	  else 0.
+	in
+	deg rad
+  let add x y =
+    let z_re, z_im = re x +. re y, im x +. im y in
+    let arg = arg z_re z_im
+    and magn = magn z_re z_im in
+    {magn; arg}	
 end
- *)
