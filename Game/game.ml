@@ -14,7 +14,7 @@ let switch_symbol = function
 (* The function that takes the users input, tries to make a move and handles
    all common exceptions by restarting the turn. *)
 let rec make_move player field =
-  print_endline ("It is the turn of" ^(Field.symbol_to_string player));
+  print_endline ("It is the turn of "^(Field.symbol_to_string player));
   (*/// Print whose turn it is. The input "player" is of type Field.symbol. ///*)
   try
     print_string "Place in row : ";

@@ -120,8 +120,8 @@ module StringH = Sorted_List_Priority_Queue (Cmp_String)
 (* Write some examples using push and pop! *)
 let _ = IntH.pop [1; 2; 4; 5];;
 let _ = IntH.push 3 [1; 2; 4; 5];;
-let _ = StringH ["abc"; "def"; "df"];;
-let _ = StringH "ci" ["abc"; "def"; "df"];;
+let _ = StringH.pop ["abc"; "def"; "df"];;
+let _ = StringH.push "ci" ["abc"; "def"; "df"];;
 
 (* Write a functor To_List that takes an implementation of Priority_Queue as an argument
    and returns a module with a "to_list" function, that takes a priority queue and yields

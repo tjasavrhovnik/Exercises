@@ -10,6 +10,7 @@ def fib(n):
         return n
     else:
         return fib(n - 2) + fib(n - 1)
+# Too slow.
 
 # Define fib as a recursive function, but using the lru_cache decorater to
 # memoize results.
@@ -18,7 +19,7 @@ def fib_cache(n):
     if n <= 1:
         return n
     else:
-        return fib_cache(n - 2) + fib_cache(n - 1)
+        return fib_cache(n - 2) + fib_cache(n - 1)   
 #Cannot comupute fib_cache(500) at first, because there are too many recursive calls.
 #But we can comupte fib_cache(200), it remembers all the numbers,
 #so we can compute for 500.
@@ -58,6 +59,7 @@ def fib_memo_iter(n):
     for i in range(2, n+1):
         res[i] = res[i-1] + res[i-2]
     return res[n]
+# Not enough memory for > 10**5.
 
 # Define fib as a dynamic program that only keeps those intermediate results
 # around that are needed to compute the next step.
@@ -65,10 +67,9 @@ def fib_iter(n):
     a = 0
     b = 1
     for i in range(2, n+1):
-        c = a
-        d = c + b
-        a = c
-        b = d
+        c = a + b
+        a = b
+        b = c
     return b
 
 def fib_iter2(n):
@@ -82,3 +83,4 @@ def fib_iter2(n):
             x_2 = x_1
             x_1 = x
         return x
+# Works for > 10**6.

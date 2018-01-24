@@ -84,12 +84,20 @@ def quicksort(a):
 #
 # Hint: You can use an auxilary function.
 ##########################################################################
-def kth_part(a, k, start, end):
-    if start >= end:
-        return
-    b = pivot_list(a, start, end)
-    
+def kth_el_part(a, k, start, end):
+    if start > end:
+        return None
+    else:
+        b = pivot_list(a, start, end)
+        if b == k:
+            return a[b]
+        elif b > k:
+            return kth_el_part(a, k, start, b-1)
+        else:
+            return kth_el_part(a, k, b+1, end)
 
 def kth_element(a, k):
-    kth_part(a, k, 0, len(a)-1)
-    return k
+    if k > len(a):
+        return None
+    else:
+        return kth_el_part(a, k, 0, len(a)-1)
