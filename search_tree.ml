@@ -315,7 +315,7 @@ let rec delete_pred x = function
 	  match pred t with
 	  | None -> r
 	  | Some p ->
-	    let clean_l = delete p l in
+	    let clean_l = delete_pred p l in
 		Node(clean_l, p, r)
 
 (* An additional option is to change the type of the tree. Define a new tree
