@@ -67,7 +67,7 @@ let rec all_positive (Rose (root, forest)) =
 
 (* 2.5) Definirajte funkcijo, ki izračuna največjo širino rožnega drevesa, torej največjo dolžino
    gozda, ki se pojavi v kateremkoli vozlišču rožnega drevesa. *)
-let sirina_drevesa (Rose (_, forest)) =
+let rec max_width (Rose (_, forest)) =
   List.map max_width forest |> List.fold_left max (List.length forest)
 
 (* 2.6) Definirajte funkcijo, ki sestavi (poljubno) rožno drevo globine n.
