@@ -21,7 +21,7 @@ def fib_cache(n):
     else:
         return fib_cache(n - 2) + fib_cache(n - 1)   
 #Cannot comupute fib_cache(500) at first, because there are too many recursive calls.
-#But we can comupte fib_cache(200), it remembers all the numbers,
+#But we can compute fib_cache(200), it remembers all the numbers,
 #so we can compute for 500.
 
 # Draw the call tree for n = 5 and identify which subproblems are repeated.
