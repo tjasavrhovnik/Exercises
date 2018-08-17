@@ -57,6 +57,6 @@ let alternating_towers height =
 	else if height = 2 then 1
 	else if height = 3 then 2
 	else
-	  redtop (height-2) + (height-3)
+	  redtop (height-2) + redtop (height-3)
   in
   redtop height + bluetop height
